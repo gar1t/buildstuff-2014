@@ -1,0 +1,9 @@
+%-*-erlang-*-
+{application, buildstuff,
+ [{description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [kernel, stdlib]},
+  {mod, {buildstuff_app, []}},
+  {env, []}
+ ]}.
