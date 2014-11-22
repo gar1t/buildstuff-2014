@@ -1,34 +1,19 @@
 -module(buildstuff).
 
--export([start/0, hello/0, test_zmq/0]).
+-export([start/0, hello/0, req_socket/2, send/2]).
 
 start() ->
-    ok = application:start(sasl),
-    ok = application:start(gen_listener_tcp),
-    ok = application:start(syntax_tools),
-    ok = application:start(compiler),
-    ok = application:start(goldrush),
-    ok = application:start(lager),
-    ok = application:start(ezmq).    
+    e2_application:start_with_dependencies(buildstuff).
 
 hello() ->
     "Hello Buildstuff".
 
-test_zmq() ->
-
+req_socket(Addr, Port) ->
     {ok, Req} = ezmq:socket([{type, req}]),
-    {ok, Rep} = ezmq:socket([{type, rep}]),
+    ok = ezmq:connect(Req, tcp, Addr, Port, []),
+    Req.
 
-    ok = ezmq:bind(Rep, tcp, 5555, []),
-    ok = ezmq:connect(Req, tcp, {127,0,0,1}, 5555, []),
-    
-    ok = ezmq:send(Req, [<<"hello">>]),
-    
-    Result = ezmq:recv(Rep),
-    
-    io:format("***** ~p~n", [Result]),
-
-    ezmq:close(Req),
-    ezmq:close(Rep),
- 
-    ok.
+send(Socket, Bin) when is_binary(Bin) ->
+    ezmq:send(Socket, [Bin]);
+send(Socket, Frames) when is_list(Frames) ->
+    ezmq:send(Socket, Frames).

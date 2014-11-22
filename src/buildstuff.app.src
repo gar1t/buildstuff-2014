@@ -3,7 +3,7 @@
  [{description, ""},
   {vsn, "1"},
   {registered, []},
-  {applications, [kernel, stdlib]},
+  {applications, [kernel, stdlib, sasl, ezmq]},
   {mod, {buildstuff_app, []}},
   {env, []}
  ]}.
